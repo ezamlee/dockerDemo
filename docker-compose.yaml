@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  mongo:
+    image: mongo
+    volumes:
+      - db:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - test
+
+  back:
+    build: .
+    image: ezzamlee/dockerdemo:app_v1.4
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/conduit
+      - SECRET="${SECRET}"
+    depends_on:
+      - mongo
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    networks:
+      - test
+
+volumes:
+  db:
+
+networks:
+  test:

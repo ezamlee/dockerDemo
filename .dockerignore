@@ -1,0 +1,12 @@
+.env
+.gitignore
+dockerfile
+LICENSE
+README.md
+front/build
+front/node_modules
+back/node_modules
+back/public/**
+back/.circleci
+back/tests
+
